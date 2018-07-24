@@ -87,11 +87,11 @@ namespace FastExcel
         /// <summary>
         /// Populate rows
         /// </summary>
-        public void PopulateRows<T>(IEnumerable<T> rows, int existingHeadingRows = 0, bool usePropertiesAsHeadings = false)
+        public void PopulateRows<T>(IEnumerable<T> rows, int existingHeadingRows = 0, bool usePropertiesAsHeadings = false, Type returnType = null)
         {
             if ((rows.FirstOrDefault() as IEnumerable<object>) == null)
             {
-                PopulateRowsFromObjects(rows, existingHeadingRows, usePropertiesAsHeadings);
+                PopulateRowsFromObjects(rows, existingHeadingRows, usePropertiesAsHeadings, returnType);
             }
             else
             {
@@ -112,12 +112,16 @@ namespace FastExcel
             return propertyInfo.Name;
         }
 
-        private void PopulateRowsFromObjects<T>(IEnumerable<T> rows, int existingHeadingRows = 0, bool usePropertiesAsHeadings = false)
+        private void PopulateRowsFromObjects<T>(IEnumerable<T> rows, int existingHeadingRows = 0, bool usePropertiesAsHeadings = false, Type returnType = null)
         {
             int rowNumber = existingHeadingRows + 1;
 
             // Get all properties
             IEnumerable<PropertyInfo> properties = typeof(T).GetRuntimeProperties();
+            if(returnType != null)
+            {
+                properties = returnType.GetRuntimeProperties();
+            }
             List<Row> newRows = new List<Row>();
 
             if (usePropertiesAsHeadings)
@@ -145,9 +149,17 @@ namespace FastExcel
                     object value = propertyInfo.GetValue(rowObject, null);
                     if (value != null)
                     {
-                        Cell cell = new Cell(columnNumber, value);
-                        cells.Add(cell);
+                        if(value.GetType().Name.ToLower() == "string")
+                        {
+                            value = value.ToString().Replace("&", @"&amp;");
+                        }
                     }
+                    else
+                    {
+                        value = "";
+                    }
+                    Cell cell = new Cell(columnNumber, value);
+                    cells.Add(cell);
                     columnNumber++;
                 }
 

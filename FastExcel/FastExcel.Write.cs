@@ -95,6 +95,13 @@ namespace FastExcel
             Write(data, null, sheetName, 0);
         }
 
+        public void Write<T>(IEnumerable<T> rows, string sheetName, bool usePropertiesAsHeadings, Type returnType)
+        {
+            Worksheet data = new Worksheet();
+            data.PopulateRows<T>(rows, 0, usePropertiesAsHeadings, returnType);
+            Write(data, null, sheetName, 0);
+        }
+
         private void Write(Worksheet worksheet, int? sheetNumber = null, string sheetName = null, int existingHeadingRows = 0)
         {
             CheckFiles();
