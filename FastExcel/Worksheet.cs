@@ -151,7 +151,16 @@ namespace FastExcel
                     {
                         if(value.GetType().Name.ToLower() == "string")
                         {
-                            value = value.ToString().Replace("&", @"&amp;");
+                            value = value.ToString()
+                                .Replace("&", @"&amp;")
+                                .Replace("<", @"&lt;")
+                                .Replace(">", @"&gt;")
+                                .Replace("'", @"&apos;")
+                                .Replace("\"", @"&quot;");
+                        }
+                        if (value.GetType().Name.ToLower() == "decimal")
+                        {
+                            value = ((decimal)value).ToString("F2");
                         }
                     }
                     else
