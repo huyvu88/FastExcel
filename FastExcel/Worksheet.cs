@@ -157,6 +157,7 @@ namespace FastExcel
                                 .Replace(">", @"&gt;")
                                 .Replace("'", @"&apos;")
                                 .Replace("\"", @"&quot;");
+
                         }
                         if (value.GetType().Name.ToLower() == "decimal")
                         {
